@@ -1,0 +1,5 @@
+project('babs', 'cpp', default_options : [ 'buildtype=debug', 'warning_level=2' ])
+subdir('src')
+boost_dep = dependency('boost', modules : [ 'serialization' ])
+executable('server', sources : server_src, dependencies : [boost_dep])
+executable('client', sources : client_src, dependencies : [boost_dep])
