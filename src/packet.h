@@ -11,7 +11,8 @@
 using user_id_t = std::uint16_t;
 
 enum PacketTypes {
-  HELLO = 0,
+  NONE = 0,
+  HELLO,
   STATE,
   LOGIN,
   MESSAGE,
@@ -21,7 +22,7 @@ enum PacketTypes {
 struct Preamble {
   std::uint16_t version;
   std::uint8_t type;
-  Preamble() {}
+  Preamble() : version(0), type(NONE) {}
   Preamble(std::uint16_t v, PacketTypes t) : version(v), type(t) {}
   template<class Archive> void serialize(Archive& a, const unsigned int) {
     a & version;
@@ -33,8 +34,8 @@ struct Packet {
   std::uint32_t length;
   std::string serialized;
   Preamble preamble;
-  std::array<boost::asio::const_buffer, 2> buffer;
-  Packet() {}
+  std::array<boost::asio::mutable_buffer, 2> buffer;
+  Packet() : length(0) {}
   Packet(std::uint16_t v, PacketTypes t) : preamble(v, t) {}
   virtual ~Packet() {}
 };
@@ -72,24 +73,26 @@ template<typename T> void prepare(T& pkt) {
 template<typename T> void decode(T& pkt) {
   std::istringstream ss(pkt.serialized);
   boost::archive::text_iarchive a(ss);
-  a & pkt;
+  a & pkt; // throws exceptions on error!
 }
 
-template<typename T> void send(boost::asio::ip::tcp::socket& s, T& pkt) {
+template<typename T> void send(boost::asio::ip::tcp::socket& s, T& pkt, boost::system::error_code& error) {
   prepare(pkt);
-  boost::asio::async_write(s, pkt.buffer,
-			   [/*self = shared_from_this(), packet = std::make_shared<T>(pkt)*/]
-			   (const boost::system::error_code& error, std::size_t bytes_transferred) {
-			     if(error)
-			       std::cerr << error.message() << std::endl;
-			   });
+  boost::asio::write(s, pkt.buffer, error);
 }
 
-template<typename T> void receive(boost::asio::ip::tcp::socket& s, T& pkt) {
-  boost::system::error_code error;
-  size_t len = boost::asio::read(s, boost::asio::buffer(&(pkt.length), sizeof(pkt.length)), error);
-  pkt.serialized = std::string(pkt.length + 1, 0);
-  len = boost::asio::read(s, boost::asio::buffer(pkt.serialized, pkt.length), error);
-  decode(pkt);
+template<typename T> void send_async(boost::asio::ip::tcp::socket& s, T& pkt) {}
+
+template<typename T> void receive(boost::asio::ip::tcp::socket& s, T& pkt, boost::system::error_code& error) {
+  pkt.buffer[0] = boost::asio::buffer(&pkt.length, sizeof(pkt.length));
+  size_t len = boost::asio::read(s, pkt.buffer[0], error);
+  if((len > 0) && (pkt.length > 0)) {
+    pkt.serialized = std::string(pkt.length + 1, 0);
+    pkt.buffer[1] = boost::asio::buffer(pkt.serialized, pkt.length);
+    len = boost::asio::read(s, pkt.buffer[1], error);
+    decode(pkt);
+  }
 }
+
+template<typename T> void receive_async(boost::asio::ip::tcp::socket& s, T& pkt) {}
 #endif

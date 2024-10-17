@@ -41,38 +41,19 @@ public:
     HelloPacket p(api_ver, name_version());
     prepare(p);
     boost::asio::async_write(socket, p.buffer,
-			     [self = shared_from_this(), pkt = std::make_shared<HelloPacket>(p)](const boost::system::error_code& error,
-							 std::size_t bytes_transferred) {
-			       if(error)
-				 std::cerr << error.message() << std::endl;
+			     [self = shared_from_this(), pkt = std::make_shared<HelloPacket>(p)]
+			     (const boost::system::error_code& error, std::size_t bytes_transferred) {
+			       if(error) throw boost::system::system_error(error);
 			     });
-    recv();
   }
   void recv() {
+    boost::system::error_code error;
     LoginPacket l;
-    receive(socket, l);
+    receive(socket, l, error);
+    if(error) throw boost::system::system_error(error);
     std::cout << l.uid << std::endl;
-    // std::istringstream ss;
-    // boost::archive::text_iarchive a(ss);
-    // LoginPacket p();
-    // a & p;
-    // boost::asio::async_read(socket, boost::asio::buffer(buf),
-    // 			    [this, self = shared_from_this()](const boost::system::error_code& error,
-    // 							std::size_t bytes_transferred) {
-    // 			      std::cout << "odebrano " << bytes_transferred << " bajtów: ";
-    // 			      std::cout.write(buf.data(), bytes_transferred);
-    // 			      std::cout << std::endl;
-    // 			      if(error)
-    // 				std::cerr << error.message() << std::endl;
-    // 			      respond();
-    // 			    });
   }
   void respond() {
-    // std::string command = std::string(buf.data()).substr(0, 5);
-    // std::string content = std::string(buf.data()).substr(6, 5);
-    // std::cout << "Login user " << content << std::endl;
-    // uid = content;
-    // recv();
   }
   ~Session() {
     std::cout << "sesja zakończona" << std::endl;
@@ -90,7 +71,9 @@ class Server {
 			   [this, new_connection](const boost::system::error_code& error) {
 			     if(!error) {
 			       new_connection->init();
+			       new_connection->recv();
 			     }
+			     else throw boost::system::system_error(error);
 			     start_accept();
 			   });
   }

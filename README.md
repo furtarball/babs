@@ -1,4 +1,6 @@
-Protocol spec
+![Babs](banner.png)
+
+## Protocol spec
 Version 0
 1. Client establishes a TCP connection
 2. Server accepts and immediately sends a hello message
@@ -14,10 +16,11 @@ content (4)
 1. length: 4 bytes unsigned
 2. version: 2 bytes unsigned
 3. type: 1 byte unsigned
-   0 hello
-   1 state
-   2 login
-   3 message
+   0 none (to send such a packet is an error)
+   1 hello
+   2 state
+   3 login
+   4 message
 4. content…
    hello: name (string)
    state: 1 byte unsigned: 0 ok, 1… error
@@ -26,3 +29,7 @@ content (4)
 
 uid: 2 bytes unsigned
 all strings are utf-8
+
+## Acknowledgements
+Banner background photo: Phoenicopteridae Phoenicopterus ruber AMERICAN FLAMINGO, NasserHalaweh, Wikimedia Commons, CC BY-SA 4.0
+Banner font: Mrs Sheppards, Sudtipos, OFL
