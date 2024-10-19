@@ -17,7 +17,7 @@ Version 0
 
 1. length: 4 bytes unsigned
 2. version: 2 bytes unsigned
-3. type: 1 byte unsigned
+3. type: 2 bytes unsigned
    * 0 none (to send such a packet is an error)
    * 1 hello
    * 2 state

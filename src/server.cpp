@@ -12,6 +12,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 #include "packet.h"
+#include "session.h"
 
 using boost::asio::ip::tcp;
 const std::uint16_t api_ver = 0;
@@ -21,44 +22,6 @@ const std::uint16_t app_ver = 0;
 std::string name_version() {
   return std::string(name) + " v" + std::to_string(api_ver) + "." + std::to_string(app_ver);
 }
-
-class Session
-  : public std::enable_shared_from_this<Session> {
-  tcp::socket socket;
-  user_id_t uid;
-  Session(boost::asio::io_context& io_ctx) : socket(io_ctx) {}
-public:
-  typedef std::shared_ptr<Session> pointer;
-  static pointer create(boost::asio::io_context& io_ctx) {
-    return pointer(new Session(io_ctx));
-  }
-
-  tcp::socket& get_socket() {
-    return socket;
-  }
-
-  void init() {
-    HelloPacket p(api_ver, name_version());
-    prepare(p);
-    boost::asio::async_write(socket, p.buffer,
-			     [self = shared_from_this(), pkt = std::make_shared<HelloPacket>(p)]
-			     (const boost::system::error_code& error, std::size_t bytes_transferred) {
-			       if(error) throw boost::system::system_error(error);
-			     });
-  }
-  void recv() {
-    boost::system::error_code error;
-    LoginPacket l;
-    receive(socket, l, error);
-    if(error) throw boost::system::system_error(error);
-    std::cout << l.uid << std::endl;
-  }
-  void respond() {
-  }
-  ~Session() {
-    std::cout << "sesja zakończona" << std::endl;
-  }
-};
 
 class Server {
   boost::asio::io_context& io_context_;
@@ -70,17 +33,42 @@ class Server {
     acceptor_.async_accept(new_connection->get_socket(),
 			   [this, new_connection](const boost::system::error_code& error) {
 			     if(!error) {
-			       new_connection->init();
-			       new_connection->recv();
+			       init(new_connection);
+			       recv(new_connection);
 			     }
 			     else throw boost::system::system_error(error);
-			     start_accept();
+			     //start_accept();
 			   });
   }
 public:
   Server(boost::asio::io_context& io_context)
     : io_context_(io_context), acceptor_(io_context, tcp::endpoint(tcp::v4(), 52137)) {
     start_accept();
+  }
+  void init(std::shared_ptr<Session> s) {
+    HelloPacket p(api_ver, name_version());
+    s->async_send(p);
+  }
+  void handle_recv(std::shared_ptr<Packet> pkt) {
+    *pkt = Packet(pkt->serialized);
+    switch(pkt->preamble.type) {
+    case LOGIN: {
+      LoginPacket lp(pkt->serialized);
+      std::cout << "Zalogowany użytkownik UID = " << lp.uid << std::endl;
+      break;
+    }
+    case MESSAGE: {
+      MessagePacket mp(pkt->serialized);
+      std::cout << "Wiadomość od " << mp.from_uid << " do " << mp.to_uid << ": „" << mp.content << "”" << std::endl;
+      break;
+    }
+    }
+  }
+  void recv(std::shared_ptr<Session> s) {
+    s->async_receive([this, s](std::shared_ptr<Packet> p){
+      this->handle_recv(p);
+      this->recv(s);
+    });
   }
 };
 

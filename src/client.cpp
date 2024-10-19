@@ -7,8 +7,13 @@
 #include <sstream>
 #include <cstdint>
 #include "packet.h"
+#include "session.h"
 
 using boost::asio::ip::tcp;
+
+class Client {
+  
+};
 
 int main(int argc, char* argv[]) {
   boost::system::error_code error;
@@ -36,6 +41,10 @@ int main(int argc, char* argv[]) {
       LoginPacket l(0, 2137);
       prepare(l);
       send(socket, l, error);
+
+      MessagePacket m(0, 2137, 666, "okrutniku");
+      prepare(m);
+      send(socket, m, error);
 
       if(error) throw boost::system::system_error(error);
     }
