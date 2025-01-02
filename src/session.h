@@ -8,9 +8,17 @@
 using boost::asio::ip::tcp;
 
 class Session : public std::enable_shared_from_this<Session> {
-  user_id_t uid;
   Session(boost::asio::io_context& io_ctx) : socket(io_ctx) {}
+  void async_receive_body(std::shared_ptr<Packet> pkt, std::function<void(std::shared_ptr<Packet>)> handle) {
+    boost::asio::async_read(socket, pkt->buffer[1],
+			    [self = shared_from_this(), pkt, handle]
+			    (const boost::system::error_code& error, std::size_t bytes_transferred) {
+			      if(error) throw boost::system::system_error(error);
+			      handle(pkt);
+			    });
+  }
 public:
+  user_id_t uid;
   tcp::socket socket;
   typedef std::shared_ptr<Session> pointer;
   static pointer create(boost::asio::io_context& io_ctx) {
@@ -48,14 +56,5 @@ public:
 			      }
 			    });
   }
-  void async_receive_body(std::shared_ptr<Packet> pkt, std::function<void(std::shared_ptr<Packet>)> handle) {
-    boost::asio::async_read(socket, pkt->buffer[1],
-			    [self = shared_from_this(), pkt, handle]
-			    (const boost::system::error_code& error, std::size_t bytes_transferred) {
-			      if(error) throw boost::system::system_error(error);
-			      handle(pkt);
-			    });
-  }
-
 };
 #endif

@@ -1,13 +1,11 @@
 #include <array>
 #include <iostream>
 #include <boost/asio.hpp>
-#include <boost/serialization/string.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 #include <cstdint>
 #include "packet.h"
 #include "session.h"
+#include <string>
 
 using boost::asio::ip::tcp;
 
@@ -31,17 +29,20 @@ int main(int argc, char* argv[]) {
     if(error) throw boost::system::system_error(error);
 
     for(;;) {
-
       HelloPacket p;
+      std::cout << "czekam na hello pakiet" << std::endl;
       receive(socket, p, error);
       if(error == boost::asio::error::eof) break;
       else if (error) throw boost::system::system_error(error);
       std::cout << p.name << std::endl;
-      
-      LoginPacket l(0, 2137);
+
+      user_id_t uid = std::stoi(std::string(argv[1]));
+      LoginPacket l(0, uid);
       prepare(l);
       send(socket, l, error);
 
+      int n;
+      std::cin >> n;
       MessagePacket m(0, 2137, 666, "okrutniku");
       prepare(m);
       send(socket, m, error);

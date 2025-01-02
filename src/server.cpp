@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include <vector>
 #include <cstdint>
-#include <boost/serialization/string.hpp>
-#include <boost/archive/text_oarchive.hpp>
 #include <sstream>
 #include "packet.h"
 #include "session.h"
@@ -29,7 +27,7 @@ class Server {
   std::vector<Session::pointer> sessions;
   void start_accept() {
     Session::pointer new_connection = Session::create(io_context_);
-    //sessions.push_back(new_connection);
+    sessions.push_back(new_connection);
     acceptor_.async_accept(new_connection->get_socket(),
 			   [this, new_connection](const boost::system::error_code& error) {
 			     if(!error) {
@@ -37,7 +35,7 @@ class Server {
 			       recv(new_connection);
 			     }
 			     else throw boost::system::system_error(error);
-			     //start_accept();
+			     start_accept();
 			   });
   }
 public:
@@ -49,24 +47,31 @@ public:
     HelloPacket p(api_ver, name_version());
     s->async_send(p);
   }
-  void handle_recv(std::shared_ptr<Packet> pkt) {
+  void handle_recv(std::shared_ptr<Packet> pkt, std::shared_ptr<Session> s) {
     *pkt = Packet(pkt->serialized);
     switch(pkt->preamble.type) {
     case LOGIN: {
       LoginPacket lp(pkt->serialized);
       std::cout << "Zalogowany użytkownik UID = " << lp.uid << std::endl;
+      s->uid = lp.uid;
       break;
     }
     case MESSAGE: {
       MessagePacket mp(pkt->serialized);
       std::cout << "Wiadomość od " << mp.from_uid << " do " << mp.to_uid << ": „" << mp.content << "”" << std::endl;
+      for(auto&& i : sessions) {
+	if(i->uid == mp.to_uid) {
+	  std::cout << "wysyłanie…" << std::endl;
+	  i->async_send(mp);
+	}
+      }
       break;
     }
     }
   }
   void recv(std::shared_ptr<Session> s) {
     s->async_receive([this, s](std::shared_ptr<Packet> p){
-      this->handle_recv(p);
+      this->handle_recv(p, s);
       this->recv(s);
     });
   }

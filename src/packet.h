@@ -29,7 +29,7 @@ struct Preamble {
     std::istringstream ss(s);
     ss >> version;
     ss >> type;
-    s = std::string(ss.str(), ss.tellg() + 1);
+    s = std::string(ss.str(), static_cast<size_t>(ss.tellg()) + 1);
   }
   std::string serialize() {
     std::ostringstream ss;
@@ -133,6 +133,7 @@ template<typename T> void receive(boost::asio::ip::tcp::socket& s, T& pkt, boost
     pkt.serialized = std::string(pkt.length + 1, 0);
     pkt.buffer[1] = boost::asio::buffer(pkt.serialized, pkt.length);
     len = boost::asio::read(s, pkt.buffer[1], error);
+    std::cout << pkt.serialized << std::endl;
     //pkt.decode();
   }
 }
