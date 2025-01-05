@@ -1,3 +1,8 @@
+/**
+	@file server.cpp
+	@brief Implementation of the server app.
+*/
+
 #include "packet.h"
 #include "session.h"
 #include <boost/asio.hpp>
@@ -5,11 +10,11 @@
 #include <ctime>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <memory>
 #include <sstream>
 #include <string>
 #include <unistd.h>
-#include <vector>
 
 using boost::asio::ip::tcp;
 const std::uint16_t api_ver = 0;
@@ -22,13 +27,14 @@ std::string name_version() {
 }
 
 class Server {
-	boost::asio::io_context& io_context_;
-	tcp::acceptor acceptor_;
-	std::vector<Session::pointer> sessions;
+	boost::asio::io_context& ctx;
+	tcp::acceptor acceptor;
+	/** Data structure for session objects.
+		One user can maintain multiple sessions. */
+	std::map<user_id_t, std::vector<Session::pointer>> sessions;
 	void start_accept() {
-		Session::pointer new_connection = Session::create(io_context_);
-		sessions.push_back(new_connection);
-		acceptor_.async_accept(
+		Session::pointer new_connection(new Session(ctx));
+		acceptor.async_accept(
 			new_connection->get_socket(),
 			[this, new_connection](const boost::system::error_code& error) {
 				if (!error) {
@@ -41,43 +47,58 @@ class Server {
 	}
 
 	public:
-	Server(boost::asio::io_context& io_context)
-		: io_context_(io_context),
-		  acceptor_(io_context, tcp::endpoint(tcp::v4(), 52137)) {
+	Server(boost::asio::io_context& ctx)
+		: ctx(ctx), acceptor(ctx, tcp::endpoint(tcp::v4(), 52137)) {
 		start_accept();
 	}
 	void init(std::shared_ptr<Session> s) {
 		HelloPacket p(api_ver, name_version());
-		s->async_send(p);
+		s->async_send(p.serialize());
 	}
-	void handle_recv(std::shared_ptr<Packet> pkt, std::shared_ptr<Session> s) {
-		*pkt = Packet(pkt->serialized);
-		switch (pkt->preamble.type) {
+	/** @brief React to received packet.
+
+		Part of argument "handle" passed by recv() to Session::async_receive.
+		@return Whether session continues.
+	*/
+	bool handle_recv(std::string pkt, std::shared_ptr<Session> s) {
+		std::cout << pkt << std::endl;
+		Packet packet(pkt);
+		switch (packet.get_type()) {
+		case NONE: {
+			for (auto i = sessions[s->uid].begin(); i < sessions[s->uid].end();
+				 i++) {
+				if ((*i)->id == s->id)
+					sessions[s->uid].erase(i);
+			}
+			return false;
+		}
 		case LOGIN: {
-			LoginPacket lp(pkt->serialized);
-			std::cout << "Zalogowany użytkownik UID = " << lp.uid << std::endl;
-			s->uid = lp.uid;
+			LoginPacket lp(pkt);
+			std::cout << "Zalogowany użytkownik UID = " << lp.get_uid()
+					  << " (id sesji: " << s->id << ")" << std::endl;
+			s->uid = lp.get_uid();
+			sessions[lp.get_uid()].push_back(s);
 			break;
 		}
 		case MESSAGE: {
-			MessagePacket mp(pkt->serialized);
-			std::cout << "Wiadomość od " << mp.from_uid << " do " << mp.to_uid
-					  << ": „" << mp.content << "”" << std::endl;
-			for (auto&& i : sessions) {
-				if (i->uid == mp.to_uid) {
-					std::cout << "wysyłanie…" << std::endl;
-					i->async_send(mp);
-				}
+			MessagePacket mp(pkt);
+			std::cout << "Wiadomość od " << mp.get_from_uid() << " do " << mp.get_to_uid()
+					  << ": „" << mp.get_content() << "”" << std::endl;
+			for (auto i : sessions[mp.get_to_uid()]) {
+				std::cout << "wysyłanie…" << std::endl;
+				i->async_send(mp.serialize());
 			}
 			break;
 		}
 		}
+		return true;
 	}
 	void recv(std::shared_ptr<Session> s) {
-		s->async_receive([this, s](std::shared_ptr<Packet> p) {
-			this->handle_recv(p, s);
-			this->recv(s);
-		});
+		auto handle = [this, s](std::string p) {
+			if (this->handle_recv(p, s))
+				this->recv(s);
+		};
+		s->async_receive(handle);
 	}
 };
 
