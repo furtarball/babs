@@ -3,11 +3,12 @@
 	@brief Implementation of the client app.
 */
 
-#include "packet.h"
-#include "session.h"
+#include "../include/packet.h"
+#include "../include/session.h"
 #include <array>
 #include <boost/asio.hpp>
 #include <cstdint>
+#include <gtkmm.h>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -19,7 +20,13 @@ const char* name = "Babs Client";
 const std::uint16_t app_ver = 0;
 
 class Client {
+	Glib::RefPtr<Gtk::Application> app;
+	Glib::RefPtr<Gtk::Builder> builder;
+	Gtk::Window* window;
+	Gtk::Entry* entry;
+
 	public:
+	int run() { return app->run(); }
 	boost::asio::io_context& ctx;
 	Session::pointer session;
 	std::thread worker;
@@ -53,16 +60,34 @@ class Client {
 		};
 		session->async_receive(handle);
 	}
+	void on_app_activate() {
+		app->add_window(*window);
+		window->set_visible(true);
+	}
 	Client(boost::asio::io_context& c, const std::string& s, user_id_t u)
-		: ctx(c), session(new Session(c, u)) {
+		: app(Gtk::Application::create("io.github.furtarball.babs.client")),
+		  builder(Gtk::Builder::create_from_file("babs.ui")),
+		  window(builder->get_widget<Gtk::ApplicationWindow>("Window")),
+		  entry(builder->get_widget<Gtk::Entry>("Entry")),
+		  ctx(c),
+		  session(new Session(c, u)) {
+		app->signal_startup().connect([&] { on_app_activate(); });
+		window->signal_hide().connect([&] { delete window; });
 		connect(s, u);
 		worker = std::thread([this]() { ctx.run(); });
+		worker.detach();
+	}
+	~Client() {
+		ctx.stop();
 	}
 };
 
 int main(int argc, char* argv[]) {
 	boost::system::error_code error;
 	boost::asio::io_context io_context;
+	Client client(io_context, argv[1], std::stoi(std::string(argv[2])));
+	return client.run();
+
 	try {
 		Client c(io_context, argv[1], std::stoi(std::string(argv[2])));
 		for (;;) {

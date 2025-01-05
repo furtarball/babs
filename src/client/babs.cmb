@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<!DOCTYPE cambalache-project SYSTEM "cambalache-project.dtd">
+<cambalache-project version="0.94.0" target_tk="gtk-4.0">
+  <ui>
+	(1,None,"babs.ui","babs.ui",None,None,None,None,None,None,None)
+  </ui>
+  <object>
+	(1,1,"GtkApplicationWindow","Window",None,None,None,None,0,None,None),
+	(1,2,"GtkBox",None,1,None,None,None,0,None,None),
+	(1,3,"GtkStackSidebar","Sidebar",2,None,None,None,0,None,None),
+	(1,4,"GtkBox",None,2,None,None,None,2,None,None),
+	(1,5,"GtkStack",None,4,None,None,None,0,None,None),
+	(1,6,"GtkEntry","Entry",4,None,None,None,1,None,None)
+  </object>
+  <object_property>
+	(1,3,"GtkWidget","hexpand","True",None,None,None,None,None,None,None,None,None),
+	(1,4,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(1,5,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None)
+  </object_property>
+</cambalache-project>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.94.1 -->
+<interface>
+  <!-- interface-name babs.ui -->
+  <requires lib="gtk" version="4.0"/>
+  <object class="GtkApplicationWindow" id="Window">
+    <child>
+      <object class="GtkBox">
+        <child>
+          <object class="GtkStackSidebar" id="Sidebar">
+            <property name="hexpand">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkStack">
+                <property name="vexpand">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkEntry" id="Entry"/>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -3,8 +3,8 @@
 	@brief Implementation of the server app.
 */
 
-#include "packet.h"
-#include "session.h"
+#include "../include/packet.h"
+#include "../include/session.h"
 #include <boost/asio.hpp>
 #include <cstdint>
 #include <ctime>
