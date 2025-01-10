@@ -1,1 +1,1 @@
-client_src = files('client.cpp')
+client_src = files('main.cpp', 'client.cpp', 'gui.cpp')

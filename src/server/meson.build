@@ -1,1 +1,1 @@
-server_src = files('server.cpp')
+server_src = files('server.cpp', 'main.cpp')

@@ -2,25 +2,41 @@
 <!-- Created with Cambalache 0.94.1 -->
 <interface>
   <!-- interface-name babs.ui -->
-  <requires lib="gtk" version="4.0"/>
+  <requires lib="gtk" version="4.6"/>
   <object class="GtkApplicationWindow" id="Window">
+    <property name="default-height">400</property>
+    <property name="default-width">640</property>
     <child>
       <object class="GtkBox">
-        <child>
-          <object class="GtkStackSidebar" id="Sidebar">
-            <property name="hexpand">True</property>
-          </object>
-        </child>
         <child>
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkStack">
+              <object class="GtkEntry" id="ContactEntry">
+                <property name="placeholder-text">New contact's uid…</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkStackSidebar" id="Sidebar">
+                <property name="vexpand">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="hexpand">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkStack" id="Stack">
                 <property name="vexpand">True</property>
               </object>
             </child>
             <child>
-              <object class="GtkEntry" id="Entry"/>
+              <object class="GtkEntry" id="MsgEntry">
+                <property name="activates-default">True</property>
+                <property name="placeholder-text">Message…</property>
+              </object>
             </child>
           </object>
         </child>

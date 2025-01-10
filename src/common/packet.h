@@ -1,6 +1,6 @@
 /**
 	@file packet.h
-	@brief Definitions of packet structs.
+	@brief Packet classes.
 */
 
 #ifndef PACKET_H
@@ -18,12 +18,7 @@ enum PacketTypes { NONE = 0, HELLO, STATE, LOGIN, MESSAGE, TYPES_TOTAL };
 
 /** @brief Parent packet class. Only contains the preamble. */
 class Packet {
-	void deserialize(std::string& s) {
-		std::istringstream ss(s);
-		ss >> version;
-		ss >> type;
-		s = std::string(ss.str(), static_cast<size_t>(ss.tellg()) + 1);
-	}
+	void deserialize(std::string& s);
 	std::uint16_t version;
 	std::uint16_t type;
 
@@ -41,24 +36,14 @@ class Packet {
 	std::uint16_t get_type() { return type; }
 	/** @brief Deserializing constructor. */
 	Packet(std::string s) { deserialize(s); }
-	std::string serialize() {
-		std::ostringstream ss;
-		ss << version << " " << static_cast<int>(type);
-		return ss.str();
-	}
+	/** @brief Converts Packet to std::string. */
+	std::string serialize();
 	virtual ~Packet() = default;
 };
 
 class HelloPacket : public Packet {
 	std::string name;
-	void deserialize(std::string& s) {
-		size_t quote = s.find('"', 0);
-		if (quote != std::string::npos) {
-			size_t unquote = s.find('"', quote + 1);
-			if (unquote != std::string::npos)
-				name = std::string(s, 1, unquote - 1);
-		}
-	}
+	void deserialize(std::string& s);
 
 	public:
 	void set_name(const std::string& n) { name = n; }
@@ -70,19 +55,12 @@ class HelloPacket : public Packet {
 		Packet::begin_deserialization(s);
 		deserialize(s);
 	}
-	std::string serialize() {
-		std::ostringstream ss;
-		ss << Packet::serialize() << " \"" << name << "\"";
-		return ss.str();
-	}
+	std::string serialize();
 };
 
 class LoginPacket : public Packet {
 	user_id_t uid;
-	void deserialize(std::string& s) {
-		std::istringstream ss(s);
-		ss >> uid;
-	}
+	void deserialize(std::string& s);
 
 	public:
 	void set_uid(user_id_t id) { uid = id; }
@@ -94,28 +72,14 @@ class LoginPacket : public Packet {
 		Packet::begin_deserialization(s);
 		deserialize(s);
 	}
-	std::string serialize() {
-		std::ostringstream ss;
-		ss << Packet::serialize() << " " << uid;
-		return ss.str();
-	}
+	std::string serialize();
 };
 
 class MessagePacket : public Packet {
 	user_id_t from_uid;
 	user_id_t to_uid;
 	std::string content;
-	void deserialize(std::string& s) {
-		std::istringstream ss(s);
-		ss >> from_uid;
-		ss >> to_uid;
-		size_t quote = s.find('"', 0);
-		if (quote != std::string::npos) {
-			size_t unquote = s.find('"', quote + 1);
-			if (unquote != std::string::npos)
-				content = std::string(s, quote + 1, unquote - (quote + 1));
-		}
-	}
+	void deserialize(std::string& s);
 
 	public:
 	void set_from_uid(user_id_t id) { from_uid = id; }
@@ -133,11 +97,6 @@ class MessagePacket : public Packet {
 		Packet::begin_deserialization(s);
 		deserialize(s);
 	}
-	std::string serialize() {
-		std::ostringstream ss;
-		ss << Packet::serialize() << " " << from_uid << " " << to_uid << " \""
-		   << content << "\"";
-		return ss.str();
-	}
+	std::string serialize();
 };
 #endif
