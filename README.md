@@ -2,6 +2,30 @@
    <img src="banner.png" alt="Babs" />
 </p>
 
+A simple instant messaging app.
+* Client-server
+* Written in C++ using Boost libraries
+* Asynchronous server and client apps
+* Graphical client app using Gtk4
+* Documentation using Doxygen
+
+![Screenshot of the client app](screenshot.png)
+
+## Compiling
+Required: meson, g++, Boost, gtkmm 4.
+```
+git clone https://github.com/furtarball/babs
+cd babs
+meson setup builddir
+meson compile -C builddir
+```
+`client` must be in the same directory as `babs.ui` from `src/client`.
+
+## Usage
+Server requires open port 52137. Client takes two command line arguments: server's IP and user ID.
+
+Use top left text field to add a new contact by UID. A new conversation will appear in the sidebar. Use bottom text input to send messages.
+
 ## Protocol spec
 Version 0
 1. Client establishes a TCP connection
