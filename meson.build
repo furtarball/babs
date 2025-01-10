@@ -1,4 +1,4 @@
-project('babs', 'cpp', default_options : [ 'buildtype=debug', 'warning_level=2' ])
+project('babs', 'cpp', default_options : [ 'buildtype=debug', 'warning_level=2', 'cpp_std=c++20' ])
 subdir('src/common')
 subdir('src/server')
 subdir('src/client')
