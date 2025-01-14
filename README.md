@@ -6,7 +6,7 @@ A simple instant messaging app.
 * Client-server
 * Written in C++ using Boost libraries
 * Asynchronous server and client apps
-* Graphical client app using Gtk4
+* Graphical client app using Gtk4 and libadwaita
 * Documentation using Doxygen
 
 ![Screenshot of the client app](screenshot.png)

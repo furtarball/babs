@@ -14,7 +14,6 @@
 #include <memory>
 #include <semaphore>
 #include <thread>
-#include <utility>
 #include <adwaita.h>
 
 using boost::asio::ip::tcp;
