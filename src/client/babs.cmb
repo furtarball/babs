@@ -5,18 +5,18 @@
 	(1,None,"babs.ui","babs.ui",None,None,None,None,None,None,None)
   </ui>
   <object>
-	(1,1,"GtkApplicationWindow","Window",None,None,None,None,0,None,None),
-	(1,10,"GtkPaned",None,1,None,None,None,0,None,None),
+	(1,10,"GtkPaned",None,20,None,None,None,1,None,None),
 	(1,11,"GtkBox",None,10,None,None,None,0,None,None),
 	(1,12,"GtkEntry","ContactEntry",11,None,None,None,0,None,None),
 	(1,13,"GtkStackSidebar","Sidebar",11,None,None,None,1,None,None),
 	(1,14,"GtkBox",None,10,None,None,None,1,None,None),
 	(1,16,"GtkEntry","MsgEntry",14,None,None,None,1,None,None),
-	(1,18,"GtkStack","Stack",14,None,None,None,0,None,None)
+	(1,18,"GtkStack","Stack",14,None,None,None,0,None,None),
+	(1,19,"AdwApplicationWindow","Window",None,None,None,None,1,None,None),
+	(1,20,"GtkBox",None,19,None,None,None,0,None,None),
+	(1,21,"AdwHeaderBar",None,20,None,None,None,0,None,None)
   </object>
   <object_property>
-	(1,1,"GtkWindow","default-height","400",None,None,None,None,None,None,None,None,None),
-	(1,1,"GtkWindow","default-width","640",None,None,None,None,None,None,None,None,None),
 	(1,10,"GtkPaned","position","200",None,None,None,None,None,None,None,None,None),
 	(1,10,"GtkPaned","position-set","True",None,None,None,None,None,None,None,None,None),
 	(1,11,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
@@ -26,6 +26,8 @@
 	(1,12,"GtkWidget","margin-end","3",None,None,None,None,None,None,None,None,None),
 	(1,12,"GtkWidget","margin-start","3",None,None,None,None,None,None,None,None,None),
 	(1,12,"GtkWidget","margin-top","3",None,None,None,None,None,None,None,None,None),
+	(1,13,"GtkWidget","can-focus","False",None,None,None,None,None,None,None,None,None),
+	(1,13,"GtkWidget","focus-on-click","False",None,None,None,None,None,None,None,None,None),
 	(1,13,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
 	(1,14,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
 	(1,16,"GtkEntry","placeholder-text","Message…",None,None,None,None,None,None,None,None,None),
@@ -34,6 +36,9 @@
 	(1,16,"GtkWidget","margin-start","3",None,None,None,None,None,None,None,None,None),
 	(1,16,"GtkWidget","margin-top","3",None,None,None,None,None,None,None,None,None),
 	(1,18,"GtkStack","transition-type","slide-right",None,None,None,None,None,None,None,None,None),
-	(1,18,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None)
+	(1,18,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(1,19,"GtkWindow","default-height","400",None,None,None,None,None,None,None,None,None),
+	(1,19,"GtkWindow","default-width","640",None,None,None,None,None,None,None,None,None),
+	(1,20,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None)
   </object_property>
 </cambalache-project>

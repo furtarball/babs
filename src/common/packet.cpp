@@ -9,7 +9,11 @@ void Packet::deserialize(std::string& s) {
 
 std::string Packet::serialize() {
 	std::ostringstream ss;
-	ss << version << " " << static_cast<int>(type);
+	/* This line works around a mysterious bug which
+	caused ostringstreams to add thousands separators
+	to numbers for no reason (possibly gtkmm-related) */
+	ss.copyfmt(std::cout);
+	ss << version << " " << type;
 	return ss.str();
 }
 
@@ -24,6 +28,7 @@ void HelloPacket::deserialize(std::string& s) {
 
 std::string HelloPacket::serialize() {
 	std::ostringstream ss;
+	ss.copyfmt(std::cout); // see Packet::serialize()
 	ss << Packet::serialize() << " \"" << name << "\"";
 	return ss.str();
 }
@@ -35,6 +40,7 @@ void LoginPacket::deserialize(std::string& s) {
 
 std::string LoginPacket::serialize() {
 	std::ostringstream ss;
+	ss.copyfmt(std::cout); // see Packet::serialize()
 	ss << Packet::serialize() << " " << uid;
 	return ss.str();
 }
@@ -53,6 +59,7 @@ void MessagePacket::deserialize(std::string& s) {
 
 std::string MessagePacket::serialize() {
 	std::ostringstream ss;
+	ss.copyfmt(std::cout); // see Packet::serialize()
 	ss << Packet::serialize() << " " << from_uid << " " << to_uid << " \""
 	   << content << "\"";
 	return ss.str();

@@ -14,6 +14,8 @@
 #include <memory>
 #include <semaphore>
 #include <thread>
+#include <utility>
+#include <adwaita.h>
 
 using boost::asio::ip::tcp;
 extern const char* port;
@@ -26,7 +28,7 @@ class Client {
 	boost::asio::io_context& ctx;
 	std::shared_ptr<Session> session;
 	/** @brief Worker thread for running the io_context.
-	
+
 		Stopped by destructor. */
 	std::thread worker;
 	/** @brief Function for notifying ClientGui's dispatcher object.
@@ -61,7 +63,7 @@ class Client {
 		@see worker */
 	void start_worker();
 	/** @brief Listen to incoming packets.
-	
+
 		Executed in a loop by worker. Calls handle_recv().
 		@see worker
 		@see handle_recv() */
@@ -71,20 +73,40 @@ class Client {
 	~Client() { ctx.stop(); }
 };
 
+/** @brief Scrollable text view with a built-in buffer.
+
+	Each talk has its own scrolled window so that the position
+	of the scroll bar can be remembered after conversations are
+	switched back and forth.
+*/
+class Talk {
+	Glib::RefPtr<Gtk::TextBuffer> buffer;
+	Gtk::TextView view;
+	Gtk::ScrolledWindow window;
+
+	public:
+	Glib::RefPtr<Gtk::TextBuffer> get_buffer() { return buffer; }
+	Gtk::TextView& get_view() { return view; }
+	Gtk::ScrolledWindow& get_window() { return window; }
+	void scroll_down();
+	Talk();
+};
+
 /** @brief Gtk-based GUI for the client. */
 class ClientGui {
 	boost::asio::io_context ctx;
 	Client client;
 	user_id_t user;
 
+	/** @brief Workaround to make libadwaita work with gtkmm */
+	AdwStyleManager* style_mgr;
 	Glib::RefPtr<Gtk::Application> app;
 	Glib::RefPtr<Gtk::Builder> builder;
 	Gtk::Window* window;
 	Gtk::Stack* stack;
 	Gtk::StackSidebar* sidebar;
 	Gtk::Entry *contactentry, *msgentry;
-	std::map<user_id_t, Glib::RefPtr<Gtk::TextBuffer>> talks;
-	std::map<user_id_t, Gtk::TextView> talkviews;
+	std::map<user_id_t, Talk> talks;
 
 	/** @brief The workaround for Gtk's lack of thread-safety. */
 	Glib::Dispatcher dispatcher;
