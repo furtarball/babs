@@ -3,7 +3,7 @@
 <interface>
   <!-- interface-name babs.ui -->
   <requires lib="gtk" version="4.6"/>
-  <requires lib="libadwaita" version="1.0"/>
+  <requires lib="libadwaita" version="1.4"/>
   <object class="AdwApplicationWindow" id="Window">
     <property name="default-height">400</property>
     <property name="default-width">640</property>
@@ -14,19 +14,28 @@
           <object class="AdwHeaderBar"/>
         </child>
         <child>
-          <object class="GtkPaned">
-            <property name="position">200</property>
-            <property name="position-set">True</property>
-            <child>
+          <object class="AdwOverlaySplitView">
+            <property name="content">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkStack" id="Stack">
+                    <property name="transition-type">slide-right</property>
+                    <property name="vexpand">True</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="MsgEntry">
+                    <property name="placeholder-text">Message…</property>
+                  </object>
+                </child>
+              </object>
+            </property>
+            <property name="sidebar">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkEntry" id="ContactEntry">
-                    <property name="input-purpose">number</property>
-                    <property name="margin-bottom">3</property>
-                    <property name="margin-end">3</property>
-                    <property name="margin-start">3</property>
-                    <property name="margin-top">3</property>
                     <property name="placeholder-text">New contact's uid…</property>
                   </object>
                 </child>
@@ -38,27 +47,8 @@
                   </object>
                 </child>
               </object>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="orientation">vertical</property>
-                <child>
-                  <object class="GtkStack" id="Stack">
-                    <property name="transition-type">slide-right</property>
-                    <property name="vexpand">True</property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkEntry" id="MsgEntry">
-                    <property name="margin-bottom">3</property>
-                    <property name="margin-end">3</property>
-                    <property name="margin-start">3</property>
-                    <property name="margin-top">3</property>
-                    <property name="placeholder-text">Message…</property>
-                  </object>
-                </child>
-              </object>
-            </child>
+            </property>
+            <property name="sidebar-width-fraction">0.3333</property>
           </object>
         </child>
       </object>
