@@ -8,11 +8,13 @@ A simple instant messaging app.
 * Asynchronous server and client apps
 * Graphical client app using Gtk4 and libadwaita
 * Documentation using Doxygen
+* Phone-friendly user interface
 
-![Screenshot of the client app](screenshot.png)
+![Screenshot of the client app on a PC](screenshot.png)
+![Screenshot of the client app on a smartphone](screenshot_phone.png)
 
 ## Compiling
-Required: meson, g++, Boost, gtkmm 4.
+Required: meson, g++, Boost, gtkmm 4, libadwaita.
 ```
 git clone https://github.com/furtarball/babs
 cd babs

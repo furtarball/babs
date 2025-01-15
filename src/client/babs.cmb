@@ -5,40 +5,32 @@
 	(1,None,"babs.ui","babs.ui",None,None,None,None,None,None,None)
   </ui>
   <object>
-	(1,10,"GtkPaned",None,20,None,None,None,1,None,None),
-	(1,11,"GtkBox",None,10,None,None,None,0,None,None),
-	(1,12,"GtkEntry","ContactEntry",11,None,None,None,0,None,None),
-	(1,13,"GtkStackSidebar","Sidebar",11,None,None,None,1,None,None),
-	(1,14,"GtkBox",None,10,None,None,None,1,None,None),
-	(1,16,"GtkEntry","MsgEntry",14,None,None,None,1,None,None),
-	(1,18,"GtkStack","Stack",14,None,None,None,0,None,None),
 	(1,19,"AdwApplicationWindow","Window",None,None,None,None,1,None,None),
-	(1,20,"GtkBox",None,19,None,None,None,0,None,None),
-	(1,21,"AdwHeaderBar",None,20,None,None,None,0,None,None)
+	(1,20,"AdwOverlaySplitView",None,28,None,None,None,1,None,None),
+	(1,21,"GtkBox",None,20,None,None,None,0,None,None),
+	(1,22,"AdwHeaderBar",None,28,None,None,None,0,None,None),
+	(1,23,"GtkStack","Stack",21,None,None,None,0,None,None),
+	(1,24,"GtkEntry","MsgEntry",21,None,None,None,1,None,None),
+	(1,25,"GtkBox",None,20,None,None,None,1,None,None),
+	(1,26,"GtkEntry","ContactEntry",25,None,None,None,0,None,None),
+	(1,27,"GtkStackSidebar","Sidebar",25,None,None,None,1,None,None),
+	(1,28,"GtkBox",None,19,None,None,None,0,None,None)
   </object>
   <object_property>
-	(1,10,"GtkPaned","position","200",None,None,None,None,None,None,None,None,None),
-	(1,10,"GtkPaned","position-set","True",None,None,None,None,None,None,None,None,None),
-	(1,11,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkEntry","input-purpose","number",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkEntry","placeholder-text","New contact's uid…",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkWidget","margin-bottom","3",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkWidget","margin-end","3",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkWidget","margin-start","3",None,None,None,None,None,None,None,None,None),
-	(1,12,"GtkWidget","margin-top","3",None,None,None,None,None,None,None,None,None),
-	(1,13,"GtkWidget","can-focus","False",None,None,None,None,None,None,None,None,None),
-	(1,13,"GtkWidget","focus-on-click","False",None,None,None,None,None,None,None,None,None),
-	(1,13,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
-	(1,14,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
-	(1,16,"GtkEntry","placeholder-text","Message…",None,None,None,None,None,None,None,None,None),
-	(1,16,"GtkWidget","margin-bottom","3",None,None,None,None,None,None,None,None,None),
-	(1,16,"GtkWidget","margin-end","3",None,None,None,None,None,None,None,None,None),
-	(1,16,"GtkWidget","margin-start","3",None,None,None,None,None,None,None,None,None),
-	(1,16,"GtkWidget","margin-top","3",None,None,None,None,None,None,None,None,None),
-	(1,18,"GtkStack","transition-type","slide-right",None,None,None,None,None,None,None,None,None),
-	(1,18,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
 	(1,19,"GtkWindow","default-height","400",None,None,None,None,None,None,None,None,None),
 	(1,19,"GtkWindow","default-width","640",None,None,None,None,None,None,None,None,None),
-	(1,20,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None)
+	(1,20,"AdwOverlaySplitView","content",None,None,None,None,None,21,None,None,None,None),
+	(1,20,"AdwOverlaySplitView","sidebar",None,None,None,None,None,25,None,None,None,None),
+	(1,20,"AdwOverlaySplitView","sidebar-width-fraction","0.3333",None,None,None,None,None,None,None,None,None),
+	(1,21,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(1,23,"GtkStack","transition-type","slide-right",None,None,None,None,None,None,None,None,None),
+	(1,23,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(1,24,"GtkEntry","placeholder-text","Message…",None,None,None,None,None,None,None,None,None),
+	(1,25,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None),
+	(1,26,"GtkEntry","placeholder-text","New contact's uid…",None,None,None,None,None,None,None,None,None),
+	(1,27,"GtkWidget","can-focus","False",None,None,None,None,None,None,None,None,None),
+	(1,27,"GtkWidget","focus-on-click","False",None,None,None,None,None,None,None,None,None),
+	(1,27,"GtkWidget","vexpand","True",None,None,None,None,None,None,None,None,None),
+	(1,28,"GtkOrientable","orientation","vertical",None,None,None,None,None,None,None,None,None)
   </object_property>
 </cambalache-project>
