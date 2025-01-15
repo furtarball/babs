@@ -9,7 +9,7 @@ Talk::Talk() : buffer(Gtk::TextBuffer::create()), view(buffer) {
 	view.set_editable(false);
 	view.set_cursor_visible(false);
 	view.set_monospace(true);
-	view.set_wrap_mode(Gtk::WrapMode::WORD);
+	view.set_wrap_mode(Gtk::WrapMode::WORD_CHAR);
 }
 
 void ClientGui::send_msg() {
