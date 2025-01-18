@@ -21,7 +21,6 @@ cd babs
 meson setup builddir
 meson compile -C builddir
 ```
-`client` must be in the same directory as `babs.ui` from `src/client`.
 
 ## Usage
 Server requires open port 52137. Client takes two command line arguments: server's IP and user ID.

@@ -1,4 +1,5 @@
 #include "client.h"
+#include "gresource.h"
 
 void Talk::scroll_down() {
 	auto adj = window.get_vadjustment();
@@ -57,7 +58,7 @@ ClientGui::ClientGui(std::string server, user_id_t user)
 	: ctx(), client(ctx, server, user, [this] { dispatcher.emit(); }),
 	  user(user), style_mgr(adw_style_manager_get_default()),
 	  app(Gtk::Application::create()),
-	  builder(Gtk::Builder::create_from_file("babs.ui")),
+	  builder(Gtk::Builder::create_from_resource("/io/github/furtarball/babs/babs.ui")),
 	  window(builder->get_widget<Gtk::ApplicationWindow>("Window")),
 	  stack(builder->get_widget<Gtk::Stack>("Stack")),
 	  sidebar(builder->get_widget<Gtk::StackSidebar>("Sidebar")),
