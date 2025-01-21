@@ -53,7 +53,6 @@
 	(1,46,"GtkButton","focusable","False",None,None,None,None,None,None,None,None,None),
 	(1,46,"GtkButton","icon-name","sidebar-show-symbolic",None,None,None,None,None,None,None,None,None),
 	(1,46,"GtkWidget","can-focus","False",None,None,None,None,None,None,None,None,None),
-	(1,46,"GtkWidget","can-target","False",None,None,None,None,None,None,None,None,None),
 	(1,46,"GtkWidget","focus-on-click","False",None,None,None,None,None,None,None,None,None)
   </object_property>
 </cambalache-project>
