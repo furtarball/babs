@@ -7,6 +7,7 @@
 #define CLIENT_H
 #include "../common/packet.h"
 #include "../common/session.h"
+#include <adwaita.h>
 #include <array>
 #include <functional>
 #include <gtkmm.h>
@@ -14,7 +15,6 @@
 #include <memory>
 #include <semaphore>
 #include <thread>
-#include <adwaita.h>
 
 using boost::asio::ip::tcp;
 extern const char* port;
@@ -40,6 +40,8 @@ class Client {
 	void handle_recv(std::string p);
 
 	public:
+	/** @brief To avoid keeping user's id in too many places. */
+	user_id_t get_user() { return user; }
 	/** @brief A place to share received messages between threads.
 		@see ClientGui::dispatcher */
 	std::string msg_to_process;
@@ -54,9 +56,9 @@ class Client {
 		@see Session::send() */
 	void send(std::string s) { session->send(s); }
 
-	/** @brief Connect to server and return the hello packet it sent */
+	/** @brief Connect to server and return the hello packet it sent. */
 	HelloPacket connect();
-	/** @brief Login with credentials passed earlier to constructor */
+	/** @brief Login with credentials passed earlier to constructor. */
 	void login();
 	/** @brief Start worker thread.
 		@see worker */
@@ -94,18 +96,18 @@ class Talk {
 /** @brief Gtk-based GUI for the client. */
 class ClientGui {
 	boost::asio::io_context ctx;
-	Client client;
-	user_id_t user;
+	std::unique_ptr<Client> client;
 
 	/** @brief Workaround to make libadwaita work with gtkmm */
 	AdwStyleManager* style_mgr;
 	Glib::RefPtr<Gtk::Application> app;
 	Glib::RefPtr<Gtk::Builder> builder;
-	Gtk::Window* window;
+	Gtk::Window *window;
 	Gtk::Stack* stack;
 	Gtk::StackSidebar* sidebar;
 	Gtk::Entry *contactentry, *msgentry;
 	std::map<user_id_t, Talk> talks;
+	Gtk::ToggleButton* sidebartoggle;
 
 	/** @brief The workaround for Gtk's lack of thread-safety. */
 	Glib::Dispatcher dispatcher;
@@ -114,10 +116,13 @@ class ClientGui {
 	void new_contact();
 	void on_msg_received();
 	void new_talk(user_id_t with);
+	void on_login_confirmed();
+	void toggle_sidebar();
+	void setup_login_dialog();
 
 	public:
 	int run();
-	ClientGui(std::string server, user_id_t user);
+	ClientGui();
 };
 
 #endif

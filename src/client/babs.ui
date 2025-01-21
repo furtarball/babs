@@ -2,17 +2,27 @@
 <!-- Created with Cambalache 0.94.1 -->
 <interface>
   <!-- interface-name babs.ui -->
-  <requires lib="gtk" version="4.6"/>
-  <requires lib="libadwaita" version="1.4"/>
+  <requires lib="gtk" version="4.12"/>
+  <requires lib="libadwaita" version="1.5"/>
   <object class="AdwApplicationWindow" id="Window">
     <property name="content">
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <child>
-          <object class="AdwHeaderBar"/>
+          <object class="AdwHeaderBar">
+            <child>
+              <object class="GtkToggleButton" id="SidebarToggle">
+                <property name="can-focus">False</property>
+                <property name="can-target">False</property>
+                <property name="focus-on-click">False</property>
+                <property name="focusable">False</property>
+                <property name="icon-name">sidebar-show-symbolic</property>
+              </object>
+            </child>
+          </object>
         </child>
         <child>
-          <object class="AdwOverlaySplitView">
+          <object class="AdwOverlaySplitView" id="SplitView">
             <property name="content">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
@@ -29,6 +39,7 @@
                 </child>
               </object>
             </property>
+            <property name="pin-sidebar">True</property>
             <property name="sidebar">
               <object class="GtkBox">
                 <property name="orientation">vertical</property>
@@ -54,9 +65,34 @@
     <property name="default-height">400</property>
     <property name="default-width">640</property>
   </object>
-  <object class="GtkDialog">
+  <object class="AdwDialog" id="LoginDialog">
     <property name="child">
-      <object class="GtkBox"/>
+      <object class="GtkBox">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="AdwHeaderBar">
+            <property name="show-back-button">False</property>
+            <property name="show-end-title-buttons">False</property>
+            <property name="show-start-title-buttons">False</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwEntryRow" id="LoginDialogServerEntry">
+            <property name="title">Server</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwEntryRow" id="LoginDialogUIDEntry">
+            <property name="title">User ID</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkButton" id="LoginDialogConfirmBtn">
+            <property name="label">Log in</property>
+          </object>
+        </child>
+      </object>
     </property>
+    <property name="title">Log in to a server</property>
   </object>
 </interface>
